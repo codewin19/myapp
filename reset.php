@@ -1,41 +1,3 @@
-<?php
-session_start();
-
-
-if($_SERVER['REQUEST_METHOD']=="POST")
-{
-
-	
-	$email = trim($_POST['email']);
-	$password = md5($_POST['password']);
-			require_once 'db.php';
-			$prepared_statement = $conn->prepare("SELECT * FROM users WHERE email=:email and password=:password");
-			$prepared_statement->bindParam(':email',$email);
-			$prepared_statement->bindParam(':password',$password);
-			try{
-				$prepared_statement->execute();	
-				$prepared_statement->setFetchMode(PDO::FETCH_ASSOC);
-				$result =  $prepared_statement->fetch();
-				if($prepared_statement->rowCount()>0)
-				{
-					$_SESSION['userid'] = $result['user_id'];
-
-					header('Location:dashboard.php');
-				}else{
-					$error = "";
-				}
-
-	
-			}catch(PDOException $e)
-			{
-				echo "Some Database Error",$e->getMessage();
-				// code to log into log table
-			}
-}
-
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,14 +53,9 @@ if($_SERVER['REQUEST_METHOD']=="POST")
 			text-decoration: none;	
 		}
 
-		.forgot{
-			font-size: 0.8em;
-			padding-bottom:8px;
-		}
-
 		.form-container div{
 			text-align: center;
-			margin-top:20px;
+			
 		}
 
 		.form-container button{
@@ -111,6 +68,7 @@ if($_SERVER['REQUEST_METHOD']=="POST")
 			border:2px solid #444;
 			box-shadow: 0px 2px 5px gray;
 			transition: 0.3s all;
+			margin:1em 0;
 		}
 
 		.form-container button:hover{
@@ -119,35 +77,17 @@ if($_SERVER['REQUEST_METHOD']=="POST")
 			box-shadow: none;
 			
 		}
-
-		.error{
-			background-color: rgba(255, 0, 0, 0.2);
-			border:2px solid rgba(255, 0, 0, 0.3);
-			
-		}
-
-		.form-container .error-message{
-			color: red;
-			font-size: 0.8em;
-			padding: 0.2em;
-		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h2>Login Form</h2>
-		<form method="post">
+		<h2>Password Reset</h2>
+		<form action="register.php" method="post">
 			<div class="form-container">
-				<?php if (isset($error)){ ?>
-					<div class="error error-message">Invalid Username or password!</div>
-				<?php } ?>
 				<label for="email">Email : </label>
 				<input type="email" name="email" class="input">
-				<label for="password">Password : </label>
-				<input type="password" name="password" class="input">
-				<a class="btn forgot" href="reset.php">Forgot Password?</a>
-				<button type="submit">Login</button>
-				<div>Are you new user? <a href="register.php" class="btn">Register</a></div>
+				<button type="submit">Reset password</button>
+				<div>Are you Registered user? <a href="index.php" class="btn">Login</a></div>
 			</div>
 		</form>
 	</div>
